@@ -59,4 +59,5 @@ public class Navigator {
         int START = 1;
         int FINISH = 2;
     }
+
 }

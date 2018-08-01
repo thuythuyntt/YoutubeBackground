@@ -6,7 +6,6 @@ import com.youtu.sleep.youtubbackground.R;
 import com.youtu.sleep.youtubbackground.screens.BaseActivity;
 
 public class YoutubeMainActivity extends BaseActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

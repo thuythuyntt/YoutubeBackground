@@ -1,10 +1,10 @@
-package com.youtu.sleep.youtubbackground.data.source.remote;
+package com.youtu.sleep.youtubbackground.data.source.remote.listvideo;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
-import com.youtu.sleep.youtubbackground.data.source.PopularVideosDataSource;
+import com.youtu.sleep.youtubbackground.data.source.YoutubeVideoDataSource;
 import com.youtu.sleep.youtubbackground.utils.exception.ParseJSONException;
 
 import org.json.JSONArray;
@@ -25,63 +25,54 @@ import java.util.Map;
 
 import static com.youtu.sleep.youtubbackground.utils.Contants.API_KEY;
 import static com.youtu.sleep.youtubbackground.utils.Contants.BASE_URL;
+import static com.youtu.sleep.youtubbackground.utils.Contants.MOST_POPULAR_VIDEO_URL;
 
 /**
- * Created by thuy on 06/08/2018.
+ * Created by thuy on 10/08/2018.
  */
-public class PopularVideosRemoteDataSource implements PopularVideosDataSource.RemoteDataSource {
+public class GetPopularVideoAsyncTask extends AsyncTask<Void, Void, List<Video>> {
 
-    private static final String MY_TAG = PopularVideosRemoteDataSource.class.getSimpleName();
-    private OnGetPopularVideosListener mListener;
+    private static final String MY_TAG = HomeVideoRemoteDataSource.class.getSimpleName();
+    private YoutubeVideoDataSource.RemoteDataSource.OnActionRemoteListener mListener;
 
     private Exception mException = null;
 
-    @Override
-    public void getPopularVideos(OnGetPopularVideosListener listener) {
+    public GetPopularVideoAsyncTask(YoutubeVideoDataSource.RemoteDataSource.OnActionRemoteListener listener) {
         this.mListener = listener;
-        loadData();
     }
 
-    private void loadData() {
-        GetVideoDataAsyncTask myAsyncTask = new GetVideoDataAsyncTask();
-        myAsyncTask.execute();
+    /**
+     * Get result (json string)
+     */
+
+    @Override
+    protected List<Video> doInBackground(Void... voids) {
+        try {
+            String s = getFullUrl();
+            URL url = new URL(s);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod(ParameterPopularVideo.REQUEST_METHOD);
+            InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+            String result = convertInputStreamToString(inputStream);
+            return parseData(result);
+        } catch (IOException | ParseJSONException e) {
+            mException = e;
+            return null;
+        }
     }
 
-    private class GetVideoDataAsyncTask extends AsyncTask<Void, Void, List> {
+    /**
+     * Parse from json string to Video object list
+     */
 
-        /**
-         * Get result (json string)
-         */
-
-        @Override
-        protected List<Video> doInBackground(Void... voids) {
-            try {
-                String s = getFullUrl();
-                URL url = new URL(s);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod(ParameterPopularVideo.REQUEST_METHOD);
-                InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                String result = convertInputStreamToString(inputStream);
-                return parseData(result);
-            } catch (IOException | ParseJSONException e) {
-                mException = e;
-                return null;
-            }
-        }
-
-        /**
-         * Parse from json string to Video object list
-         */
-
-        @Override
-        protected void onPostExecute(List videos) {
-            super.onPostExecute(videos);
-            if (mException == null) {
-                if (videos != null) {
-                    mListener.onSuccess(videos);
-                } else mListener.onFail(ParameterPopularVideo.NULL_LIST);
-            } else mListener.onFail(mException.getMessage());
-        }
+    @Override
+    protected void onPostExecute(List videos) {
+        super.onPostExecute(videos);
+        if (mException == null) {
+            if (videos != null) {
+                mListener.onSuccess(videos);
+            } else mListener.onFail(ParameterPopularVideo.NULL_LIST);
+        } else mListener.onFail(mException.getMessage());
     }
 
     private List<Video> parseData(String s) throws ParseJSONException {
@@ -90,8 +81,7 @@ public class PopularVideosRemoteDataSource implements PopularVideosDataSource.Re
             JSONObject jsonObject = new JSONObject(s);
             JSONArray jsonArray = jsonObject.getJSONArray(ParameterPopularVideo.ITEMS_KEY);
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject id = jsonArray.getJSONObject(i).getJSONObject(ParameterPopularVideo.ID);
-                String idVideo = id.getString(ParameterPopularVideo.VIDEO_ID);
+                String id = jsonArray.getJSONObject(i).getString(ParameterPopularVideo.ID);
                 JSONObject snippet = jsonArray.getJSONObject(i).getJSONObject(ParameterPopularVideo.SNIPPET_KEY);
                 String title = snippet.getString(ParameterPopularVideo.TITLE_KEY);
                 String description = snippet.getString(ParameterPopularVideo.DES_KEY);
@@ -99,7 +89,7 @@ public class PopularVideosRemoteDataSource implements PopularVideosDataSource.Re
                 JSONObject high = snippet.getJSONObject(ParameterPopularVideo.THUMBNAILS_KEY)
                         .getJSONObject(ParameterPopularVideo.HIGH_KEY);
                 String url = high.getString(ParameterPopularVideo.URL_KEY);
-                videos.add(new Video(idVideo, title, channelTitle, description, url));
+                videos.add(new Video(id, title, channelTitle, description, url));
             }
         } catch (JSONException e) {
             throw new ParseJSONException(e);
@@ -112,7 +102,7 @@ public class PopularVideosRemoteDataSource implements PopularVideosDataSource.Re
      */
 
     private String getFullUrl() {
-        StringBuilder str = new StringBuilder(BASE_URL);
+        StringBuilder str = new StringBuilder(BASE_URL + MOST_POPULAR_VIDEO_URL);
         Map<String, String> params = new HashMap<>();
 
         params.put(ParameterPopularVideo.PART_KEY, ParameterPopularVideo.PART_VALUE);
@@ -156,7 +146,6 @@ public class PopularVideosRemoteDataSource implements PopularVideosDataSource.Re
 
         String ITEMS_KEY = "items";
         String ID = "id";
-        String VIDEO_ID = "videoId";
         String SNIPPET_KEY = "snippet";
         String TITLE_KEY = "title";
         String DES_KEY = "description";

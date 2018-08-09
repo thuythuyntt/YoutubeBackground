@@ -35,4 +35,5 @@ public class SplashActivity extends BaseActivity {
             }
         }, TIME_DELAY);
     }
+
 }

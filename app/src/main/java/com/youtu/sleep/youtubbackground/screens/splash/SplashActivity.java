@@ -3,35 +3,56 @@ package com.youtu.sleep.youtubbackground.screens.splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.youtu.sleep.youtubbackground.R;
 import com.youtu.sleep.youtubbackground.screens.BaseActivity;
-import com.youtu.sleep.youtubbackground.screens.main.YoutubeMainActivity;
+import com.youtu.sleep.youtubbackground.R;
+import com.youtu.sleep.youtubbackground.screens.BaseActivity;
+import com.youtu.sleep.youtubbackground.screens.main.MainActivity;
 import com.youtu.sleep.youtubbackground.utils.navigator.Navigator;
 
+/**
+ * Created by thuy on 01/08/2018.
+ */
 public class SplashActivity extends BaseActivity {
-    public static final int TIME_DELAY = 1000;
+    /**
+     * show time of splash screen
+     */
+    public static final int TIME_DELAY = 1500;
+
+    private ImageView mSleepImage;
+    private ImageView mMusicImage;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        initializeView();
+        loadImage();
         handleSplash();
     }
 
-    /**
-     * handle next screen
-     */
+    private void loadImage() {
+        Glide.with(this).load(R.drawable.ic_sleep).into(mSleepImage);
+        Glide.with(this).load(R.drawable.ic_music).into(mMusicImage);
+    }
 
-    public void handleSplash() {
+    private void initializeView() {
+        mSleepImage = (ImageView) findViewById(R.id.image_sleep);
+        mMusicImage = (ImageView) findViewById(R.id.image_music);
+    }
+
+    private void handleSplash() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashActivity.this, YoutubeMainActivity.class);
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 Navigator navigator = new Navigator(SplashActivity.this);
                 navigator.startActivity(intent);
-                finish();
             }
         }, TIME_DELAY);
     }

@@ -1,6 +1,6 @@
 package com.youtu.sleep.youtubbackground.data.source;
 
-import com.youtu.sleep.youtubbackground.data.model.popularvideo.Item;
+import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
 
 import java.util.List;
 
@@ -10,21 +10,23 @@ import java.util.List;
 public interface PopularVideosDataSource {
 
     interface OnGetPopularVideosListener {
-        void onSuccess(List<Item> list);
+        void onSuccess(List<Video> videos);
         void onFail(String message);
     }
+
+    void getPopularVideos(OnGetPopularVideosListener listener);
 
     /**
      * Local data for videos
      */
+
     interface LocalDataSource extends PopularVideosDataSource{
-        void getPopularVideos(OnGetPopularVideosListener listener);
     }
 
     /**
      * Remote data for videos
      */
+
     interface RemoteDataSource extends PopularVideosDataSource{
-        void getPopularVideos(String part, String chart, OnGetPopularVideosListener listener);
     }
 }

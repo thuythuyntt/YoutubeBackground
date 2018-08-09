@@ -8,11 +8,10 @@ import android.support.annotation.NonNull;
 import com.youtu.sleep.youtubbackground.R;
 
 /**
- * Created by DaiPhongPC on 7/31/2018.
+ * Created by DaiPhongPC on 8/1/2018.
  */
 
 public class Navigator {
-
     @NonNull
     private Activity mActivity;
 
@@ -59,5 +58,4 @@ public class Navigator {
         int START = 1;
         int FINISH = 2;
     }
-
 }

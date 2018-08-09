@@ -23,6 +23,8 @@ public interface VideoContract {
         void showListVideo(List<Video> videos);
 
         void showMessageErrorExtraUrlVideo(String mess);
+
+        void updateStatusFavouriteVideo(int status);
     }
 
     /**

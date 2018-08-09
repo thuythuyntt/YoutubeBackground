@@ -1,5 +1,6 @@
 package com.youtu.sleep.youtubbackground.screens.video;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -7,7 +8,11 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.view.SurfaceHolder;
+import android.widget.RemoteViews;
 
+import com.youtu.sleep.youtubbackground.R;
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
 import com.youtu.sleep.youtubbackground.utils.Contants;
 
@@ -19,6 +24,7 @@ import java.util.List;
  */
 
 public class VideoService extends Service implements MediaPlayer.OnPreparedListener {
+    public static final int ID = 1000;
     public static VideoCallback mCallbackVideo;
     private int mPosition;
     private List<Video> mListVideos;
@@ -27,13 +33,18 @@ public class VideoService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         return START_STICKY;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        receiveIntent(intent);
+        if (intent.getAction().equals(ActionVideo.PLAY_NEW)) {
+            mPosition = intent.getIntExtra(Contants.EXTRA_POSS, 0);
+            mListVideos = intent.getParcelableArrayListExtra(Contants.EXTRA_LIST_VIDEOS);
+            playVideo();
+        }
         return mIbind;
     }
 
@@ -58,14 +69,16 @@ public class VideoService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     /**
-     * receive Intent
+     * receive Intent from notification
      */
     public void receiveIntent(Intent intent) {
         switch (intent.getAction()) {
-            case ActionVideo.PLAY_NEW:
-                mPosition = intent.getIntExtra(Contants.EXTRA_POSS, 0);
-                mListVideos = intent.getParcelableArrayListExtra(Contants.EXTRA_LIST_VIDEOS);
-                playVideo();
+            case ActionVideo.PLAY:
+                break;
+            case ActionVideo.NEXT:
+
+                break;
+            case ActionVideo.PRE:
                 break;
         }
     }
@@ -129,9 +142,57 @@ public class VideoService extends Service implements MediaPlayer.OnPreparedListe
         mMediaPlayer.seekTo(mms);
     }
 
+    /**
+     * remove holder
+     */
+    public void setHolder(SurfaceHolder holder) {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setDisplay(holder);
+        }
+    }
+
+    /**
+     * creat a custom notification
+     */
+    public NotificationCompat.Builder creatNotification(Video video) {
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notification_small_layout);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setAutoCancel(true)
+                .setContent(remoteViews);
+//        PendingIntent pendingNext = creatPendingIntent(ActionVideo.NEXT);
+//        PendingIntent pendingPre = creatPendingIntent(ActionVideo.PRE);
+//        PendingIntent pendingPlay = creatPendingIntent(ActionVideo.PLAY);
+//        remoteViews.setTextViewText(R.id.text_title, video.getTitle());
+//        remoteViews.setTextViewText(R.id.text_title, video.getChannelTitle());
+//        remoteViews.setOnClickPendingIntent(R.id.image_prev, pendingPre);
+//        remoteViews.setOnClickPendingIntent(R.id.image_next, pendingNext);
+//        remoteViews.setOnClickPendingIntent(R.id.image_play, pendingPlay);
+        return builder;
+    }
+
+    private PendingIntent creatPendingIntent(@ActionVideo String action) {
+        Intent intent = new Intent(this, VideoService.class);
+        intent.setAction(action);
+        PendingIntent pb = PendingIntent.getService(this, 0, intent, 0);
+        return pb;
+    }
+
     public class BinderService extends Binder {
         VideoService getService() {
             return VideoService.this;
         }
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        NotificationCompat.Builder builder = creatNotification(mListVideos.get(mPosition));
+        startForeground(ID, builder.build());
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

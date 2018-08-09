@@ -16,6 +16,7 @@ public interface YoutubeVideoDataSource {
     interface LocalDataSource extends YoutubeVideoDataSource {
         interface OnActionLocalListener {
             void onSuccess();
+
             void onSuccess(List<Video> list);
 
             void onFail();

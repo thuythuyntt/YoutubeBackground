@@ -2,6 +2,8 @@ package com.youtu.sleep.youtubbackground.screens.video;
 
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
 import com.youtu.sleep.youtubbackground.data.repository.UrlVideoRepository;
+import com.youtu.sleep.youtubbackground.data.repository.YoutubeVideoRepository;
+import com.youtu.sleep.youtubbackground.data.source.YoutubeVideoDataSource;
 
 import java.util.List;
 
@@ -12,9 +14,12 @@ import java.util.List;
 public class VideoPresenter implements VideoContract.Presenter {
     private VideoContract.View mView;
     private UrlVideoRepository mUrlVideoRepository;
+    private YoutubeVideoRepository mVideoRepository;
 
-    public VideoPresenter(UrlVideoRepository mUrlVideoRepository) {
+    public VideoPresenter(UrlVideoRepository mUrlVideoRepository
+            , YoutubeVideoRepository videoRepository) {
         this.mUrlVideoRepository = mUrlVideoRepository;
+        this.mVideoRepository = videoRepository;
     }
 
     @Override
@@ -50,7 +55,24 @@ public class VideoPresenter implements VideoContract.Presenter {
 
     @Override
     public void updateVideoFavourite(Video video) {
+        mVideoRepository.addToFavouriteVideoList(video, new YoutubeVideoDataSource
+                .LocalDataSource
+                .OnActionLocalListener() {
+            @Override
+            public void onSuccess() {
+                mView.updateStatusFavouriteVideo(1);
+            }
 
+            @Override
+            public void onSuccess(List<Video> list) {
+
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
     }
 
     @Override

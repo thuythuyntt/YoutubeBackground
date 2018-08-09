@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.youtu.sleep.youtubbackground.R;
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
 import com.youtu.sleep.youtubbackground.data.repository.UrlVideoRepository;
+import com.youtu.sleep.youtubbackground.data.repository.YoutubeVideoRepository;
 import com.youtu.sleep.youtubbackground.data.source.remote.UrlVideoRemoteDataSource;
 import com.youtu.sleep.youtubbackground.screens.BaseActivity;
 import com.youtu.sleep.youtubbackground.utils.Contants;
@@ -50,8 +51,9 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
-        UrlVideoRepository repository = UrlVideoRepository.getInstance(UrlVideoRemoteDataSource.getInstance());
-        mPresenter = new VideoPresenter(repository);
+        UrlVideoRepository urlRepository = UrlVideoRepository.getInstance(UrlVideoRemoteDataSource.getInstance());
+        YoutubeVideoRepository videoRepository = YoutubeVideoRepository.getInstance(getBaseContext());
+        mPresenter = new VideoPresenter(urlRepository, videoRepository);
         mPresenter.setView(this);
         setupView();
     }
@@ -70,9 +72,7 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
 
     @Override
     public List<Video> getListVideo() {
-        List<Video> list = new ArrayList<>();
-        return list;
-//        return getIntent().getParcelableArrayListExtra(Contants.EXTRA_LIST_VIDEO);
+        return getIntent().getParcelableArrayListExtra(Contants.EXTRA_LIST_VIDEO);
     }
 
     @Override
@@ -88,6 +88,16 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
     @Override
     public void showMessageErrorExtraUrlVideo(String mess) {
         Toast.makeText(VideoActivity.this, mess, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updateStatusFavouriteVideo(int status) {
+        mVideoService.getListVideos().get(mPositionVideo).setIsFavourite(status);
+        if (status == 1) {
+            mImageFa.setImageResource(R.drawable.ic_favourite_default);
+        } else {
+            mImageFa.setImageResource(R.drawable.ic_favourite_unable);
+        }
     }
 
     @Override
@@ -322,5 +332,12 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
         }
     };
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mIsBound) {
+            unbindService(mServiceConnection);
+        }
+    }
 
 }

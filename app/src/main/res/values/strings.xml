@@ -1,6 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">YouTubBackground</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">YouTubeBackground</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_recent">Recent Video</string>
+    <string name="tab_favourite">Favourite</string>
+    <string name="splash_screen_text">Youtube Background</string>
+    <string name="connect_network_fail_message">Please check network connection</string>
+    <string name="load_video_data_fail_message">Something went wrong!</string>
+    <string name="error_play_video">Can't play video</string>
 </resources>

@@ -30,6 +30,10 @@ public class HomeFragment extends BaseFragment implements PopularVideosContract.
     private VideoAdapter mAdapter;
     private PopularVideosPresenter mPresenter;
 
+    public VideoAdapter getmAdapter() {
+        return mAdapter;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

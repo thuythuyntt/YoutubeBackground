@@ -21,7 +21,7 @@ public class PopularVideosPresenter implements PopularVideosContract.Presenter {
 
     @Override
     public void getPopularVideos() {
-        mModel.getPopularVideos(new YoutubeVideoDataSource.RemoteDataSource.OnGetPopularVideosListener() {
+        mModel.getPopularVideos(new YoutubeVideoDataSource.RemoteDataSource.OnActionRemoteListener() {
             @Override
             public void onSuccess(List<Video> videos) {
                 mView.showPopularVideos(videos);

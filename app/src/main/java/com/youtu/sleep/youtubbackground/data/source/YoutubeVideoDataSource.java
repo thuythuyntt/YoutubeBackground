@@ -1,7 +1,6 @@
 package com.youtu.sleep.youtubbackground.data.source;
 
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
-import com.youtu.sleep.youtubbackground.screens.main.home.PopularVideosContract;
 
 import java.util.List;
 
@@ -34,12 +33,14 @@ public interface YoutubeVideoDataSource {
      */
 
     interface RemoteDataSource extends YoutubeVideoDataSource {
-        interface OnGetPopularVideosListener {
+        interface OnActionRemoteListener {
             void onSuccess(List<Video> videos);
 
             void onFail(String message);
         }
 
-        void getPopularVideos(OnGetPopularVideosListener listener);
+        void getPopularVideos(OnActionRemoteListener listener);
+
+        void searchVideos(String query, OnActionRemoteListener listener);
     }
 }

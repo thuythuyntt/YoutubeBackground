@@ -15,15 +15,25 @@
 
         <com.youtu.sleep.youtubbackground.widget.textviews.TextViewHeaderCustom
             android:id="@+id/text_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/tab_home"
             android:textColor="@color/color_white"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_20"/>
+
+        <EditText
+            android:id="@+id/edit_query_search"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textColor="@color/color_white"
+            android:background="@android:color/transparent"
+            android:visibility="gone"/>
 
         <ImageView
+            android:id="@+id/image_search"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_gravity="center"

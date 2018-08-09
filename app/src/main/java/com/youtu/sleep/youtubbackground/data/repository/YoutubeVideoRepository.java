@@ -43,4 +43,9 @@ public class YoutubeVideoRepository implements YoutubeVideoDataSource.RemoteData
     public void getPopularVideos(OnGetPopularVideosListener listener) {
         mYoutubeVideoRemoteDataSource.getPopularVideos(listener);
     }
+
+    @Override
+    public void removeFromFavouriteVideoList(Video video, OnActionLocalListener listener) {
+        mYoutubeVideoLocalDataSource.removeFromFavouriteVideoList(video, listener);
+    }
 }

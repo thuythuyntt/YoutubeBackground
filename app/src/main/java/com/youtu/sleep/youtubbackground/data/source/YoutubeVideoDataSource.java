@@ -1,6 +1,7 @@
 package com.youtu.sleep.youtubbackground.data.source;
 
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
+import com.youtu.sleep.youtubbackground.screens.main.home.PopularVideosContract;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ public interface YoutubeVideoDataSource {
         void addToFavouriteVideoList(Video video, OnActionLocalListener listener);
 
         void getFavouriteVideos(OnActionLocalListener listener);
+
+        void removeFromFavouriteVideoList(Video video, OnActionLocalListener listener);
     }
 
     /**

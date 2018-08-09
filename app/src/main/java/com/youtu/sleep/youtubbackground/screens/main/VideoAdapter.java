@@ -82,12 +82,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
                     } else {
                         unCheckFavouriteVideo();
                     }
+                    notifyDataSetChanged();
                 }
             });
         }
 
         void checkFavouriteVideo() {
-            mImageFavourite.setBackgroundResource(R.drawable.ic_favourite_default);
             Video v = mVideos.get(getAdapterPosition());
             v.setIsFavourite(TRUE);
             mListener.onFavouriteVideoClick(v);
@@ -95,7 +95,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         }
 
         void unCheckFavouriteVideo() {
-            mImageFavourite.setBackgroundResource(R.drawable.ic_favourite_unable);
             Video v = mVideos.get(getAdapterPosition());
             v.setIsFavourite(FALSE);
             mListener.onRemoveFavouriteVideoClick(v);
@@ -107,9 +106,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
             mTextVideoName.setText(video.getTitle());
             mTextChannel.setText(video.getChannelTitle());
             mTextDescription.setText(video.getDescription());
-            if(video.getIsFavourite()==TRUE){
+            if (video.getIsFavourite() == TRUE) {
                 mImageFavourite.setBackgroundResource(R.drawable.ic_favourite_default);
-            } else {
+            } else if (video.getIsFavourite() == FALSE) {
                 mImageFavourite.setBackgroundResource(R.drawable.ic_favourite_unable);
             }
         }

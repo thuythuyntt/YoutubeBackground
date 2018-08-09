@@ -30,8 +30,8 @@ public class YoutubeVideoLocalDataSource implements YoutubeVideoDataSource.Local
     public void addToFavouriteVideoList(Video video, OnActionLocalListener listener) {
         this.mListener = listener;
         if (mDatabaseManager.insertAFavouriteVideo(video)) {
-            listener.onSuccess();
-        } else listener.onFail();
+            this.mListener.onSuccess();
+        } else this.mListener.onFail();
     }
 
     @Override
@@ -39,9 +39,16 @@ public class YoutubeVideoLocalDataSource implements YoutubeVideoDataSource.Local
         this.mListener = listener;
         ArrayList<Video> videos = mDatabaseManager.getFavouriteVideos();
         if (videos == null || videos.isEmpty()) {
-            listener.onFail();
+            this.mListener.onFail();
         } else {
-            listener.onSuccess(videos);
+            this.mListener.onSuccess(videos);
         }
+    }
+
+    @Override
+    public void removeFromFavouriteVideoList(Video video, OnActionLocalListener listener) {
+        this.mListener = listener;
+        mDatabaseManager.removeAFavouriteVideo(video.getVideoId());
+        this.mListener.onSuccess();
     }
 }

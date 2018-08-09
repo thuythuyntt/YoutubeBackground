@@ -62,7 +62,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public DatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.mContext = context;
-        DATABASE_PATH = mContext.getFilesDir().getAbsolutePath()+ "/";
+        DATABASE_PATH = mContext.getFilesDir().getAbsolutePath() + "/";
         copyDatabase();
     }
 
@@ -182,13 +182,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return new Video(id, title, channelTitle, description, thumbUrl, isRecent, isFavourite);
     }
 
+    public void removeAFavouriteVideo(String id) {
+        openDatabase();
+        mSQLiteDatabase.delete(VIDEO_TABLE_NAME,COLUMN_VIDEO_ID + "=?", new String[]{String.valueOf(id)});
+        closeDatabase();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
     }
 }

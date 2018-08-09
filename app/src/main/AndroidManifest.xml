@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.youtu.sleep.youtubebackground">
+    package="com.youtu.sleep.youtubbackground">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -12,25 +18,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screens.splash.SplashActivity" />
-        <activity android:name=".screens.main.MainActivity" />
-        <activity android:name=".screens.video.VideoActivity">
+        <activity android:name=".screens.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name=".screens.video.VideoService">
-            <intent-filter>
-                <action android:name="com.youtu.sleep.youtubebackground.CREATNOTIFICATION" />
-                <action android:name="com.youtu.sleep.youtubebackground.PLAYNEW" />
-                <action android:name="com.youtu.sleep.youtubebackground.PLAY" />
-                <action android:name="com.youtu.sleep.youtubebackground.NEXT" />
-                <action android:name="com.youtu.sleep.youtubebackground.PRE" />
-            </intent-filter>
-        </service>
+        <activity android:name=".screens.main.MainActivity"/>
     </application>
-
 </manifest>

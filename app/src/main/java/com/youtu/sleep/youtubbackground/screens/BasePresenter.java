@@ -1,7 +1,7 @@
 package com.youtu.sleep.youtubbackground.screens;
 
 /**
- * Created by DaiPhongPC on 7/31/2018.
+ * Created by DaiPhongPC on 8/1/2018.
  */
 
 public interface BasePresenter<T> {
@@ -10,4 +10,5 @@ public interface BasePresenter<T> {
     void onStart();
 
     void onStop();
+
 }

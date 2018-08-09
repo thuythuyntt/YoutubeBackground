@@ -1,20 +1,28 @@
 package com.youtu.sleep.youtubbackground.utils;
 
 /**
- * Created by DaiPhongPC on 7/31/2018.
+ * Created by DaiPhongPC on 8/1/2018.
  */
 
 public class Contants {
-    public static final String API_KEY = "AIzaSyCp1S08P4JQsDTbB9SND-U3KdqBwRx-FPg";
+
+    public static final String API_KEY = "AIzaSyBzi9x7FhZsw5eT4RF7_jRPXADo0C1vCW4";
 
     public static final String NAME_FONT = "VNF-Oswald Regular.ttf";
-
-    public static final String BASE_URL = "https://www.googleapis.com/youtube/v3";
+    public static final String NAME_FONT_2 = "GlacialIndifference-Regular.otf";
 
     /**
-     * Get most popular videos
+     * Base url of API youtube
      */
+    public static final String BASE_URL = "https://www.googleapis.com/youtube/v3/videos?";
 
-    public static final String SUB_GET_MOST_POPULAR_VIDEO_URL = "/videos";
-    public static final String PARAMETER_REGION_CODE = "vn";
+    public static final int TRUE = 1;
+    public static final int FALSE = 0;
+
+    public static final String EXTRA_LIST_VIDEOS = "urlsvideos";
+    public static final String EXTRA_POSS = "positionvideos";
+
+    public static final String EXTRA_POS_VIDEO = "positionvideo";
+    public static final String EXTRA_LIST_VIDEO = "listvideo";
+
 }

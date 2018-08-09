@@ -13,7 +13,7 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
-        <com.youtu.sleep.youtubebackground.widget.textviews.TextViewHeaderCustom
+        <com.youtu.sleep.youtubbackground.widget.textviews.TextViewHeaderCustom
             android:id="@+id/text_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.youtu.sleep.youtubebackground.widget.tablayout.IconTabLayoutCustom
+        <com.youtu.sleep.youtubbackground.widget.tablayout.IconTabLayoutCustom
             android:id="@+id/tablayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

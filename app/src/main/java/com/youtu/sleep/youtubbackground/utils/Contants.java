@@ -14,7 +14,9 @@ public class Contants {
     /**
      * Base url of API youtube
      */
-    public static final String BASE_URL = "https://www.googleapis.com/youtube/v3/videos?";
+    public static final String BASE_URL = "https://www.googleapis.com/youtube/v3";
+    public static final String MOST_POPULAR_VIDEO_URL = "/videos?";
+    public static final String SEARCH_VIDEO_URL = "/search?";
 
     public static final int TRUE = 1;
     public static final int FALSE = 0;

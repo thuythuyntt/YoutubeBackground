@@ -21,7 +21,7 @@ public class PopularVideosPresenter implements PopularVideosContract.Presenter {
 
     @Override
     public void getPopularVideos() {
-        mModel.getPopularVideos(new YoutubeVideoDataSource.RemoteDataSource.OnGetPopularVideosListener() {
+        mModel.getPopularVideos(new YoutubeVideoDataSource.RemoteDataSource.OnActionRemoteListener() {
             @Override
             public void onSuccess(List<Video> videos) {
                 mView.showPopularVideos(videos);
@@ -56,6 +56,20 @@ public class PopularVideosPresenter implements PopularVideosContract.Presenter {
 
     @Override
     public void removeVideoList(Video video) {
+        mModel.removeFromFavouriteVideoList(video, new YoutubeVideoDataSource.LocalDataSource.OnActionLocalListener() {
+            @Override
+            public void onSuccess() {
+                mView.removeVideoFromFavouriteListSuccessfully();
+            }
 
+            @Override
+            public void onSuccess(List<Video> list) {
+            }
+
+            @Override
+            public void onFail() {
+            }
+        });
     }
+
 }

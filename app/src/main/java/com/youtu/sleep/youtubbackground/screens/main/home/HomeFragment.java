@@ -30,6 +30,10 @@ public class HomeFragment extends BaseFragment implements PopularVideosContract.
     private VideoAdapter mAdapter;
     private PopularVideosPresenter mPresenter;
 
+    public VideoAdapter getmAdapter() {
+        return mAdapter;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -126,8 +130,4 @@ public class HomeFragment extends BaseFragment implements PopularVideosContract.
         Toast.makeText(getContext(), R.string.remove_favourite_video_success_message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void removeVideoFromFavouriteListUnsuccessfully() {
-        Toast.makeText(getContext(), R.string.fail_message, Toast.LENGTH_SHORT).show();
-    }
 }

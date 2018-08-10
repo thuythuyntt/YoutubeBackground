@@ -25,6 +25,8 @@ public interface YoutubeVideoDataSource {
         void addToFavouriteVideoList(Video video, OnActionLocalListener listener);
 
         void getFavouriteVideos(OnActionLocalListener listener);
+
+        void removeFromFavouriteVideoList(Video video, OnActionLocalListener listener);
     }
 
     /**
@@ -32,12 +34,14 @@ public interface YoutubeVideoDataSource {
      */
 
     interface RemoteDataSource extends YoutubeVideoDataSource {
-        interface OnGetPopularVideosListener {
+        interface OnActionRemoteListener {
             void onSuccess(List<Video> videos);
 
             void onFail(String message);
         }
 
-        void getPopularVideos(OnGetPopularVideosListener listener);
+        void getPopularVideos(OnActionRemoteListener listener);
+
+        void searchVideos(String query, OnActionRemoteListener listener);
     }
 }

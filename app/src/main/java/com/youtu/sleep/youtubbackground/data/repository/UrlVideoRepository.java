@@ -2,7 +2,7 @@ package com.youtu.sleep.youtubbackground.data.repository;
 
 import com.youtu.sleep.youtubbackground.data.source.UrlVideoDataSource;
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
-import com.youtu.sleep.youtubbackground.data.source.remote.UrlVideoRemoteDataSource;
+import com.youtu.sleep.youtubbackground.data.source.remote.playvideo.UrlVideoRemoteDataSource;
 import com.youtu.sleep.youtubbackground.screens.video.OnGetListUrlVideoYoutube;
 
 import java.util.List;

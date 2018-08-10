@@ -23,7 +23,7 @@ import com.youtu.sleep.youtubbackground.R;
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
 import com.youtu.sleep.youtubbackground.data.repository.UrlVideoRepository;
 import com.youtu.sleep.youtubbackground.data.repository.YoutubeVideoRepository;
-import com.youtu.sleep.youtubbackground.data.source.remote.UrlVideoRemoteDataSource;
+import com.youtu.sleep.youtubbackground.data.source.remote.playvideo.UrlVideoRemoteDataSource;
 import com.youtu.sleep.youtubbackground.screens.BaseActivity;
 import com.youtu.sleep.youtubbackground.utils.Contants;
 import com.youtu.sleep.youtubbackground.utils.common.StringConverter;

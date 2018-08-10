@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screens.main.MainActivity"/>
+        <activity android:name=".screens.main.MainActivity" />
+        <activity android:name=".screens.video.VideoActivity" />
+
+        <service android:name=".screens.video.VideoService">
+            <intent-filter>
+                <action android:name="com.youtu.sleep.youtubebackground.ADDHOLDER" />
+                <action android:name="com.youtu.sleep.youtubebackground.CREATNOTIFICATION" />
+                <action android:name="com.youtu.sleep.youtubebackground.PLAYNEW" />
+                <action android:name="com.youtu.sleep.youtubebackground.PLAY" />
+                <action android:name="com.youtu.sleep.youtubebackground.NEXT" />
+                <action android:name="com.youtu.sleep.youtubebackground.PRE" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>

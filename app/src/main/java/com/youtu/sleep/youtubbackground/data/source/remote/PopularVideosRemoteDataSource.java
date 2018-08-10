@@ -1,11 +1,11 @@
-package com.youtu.sleep.youtubbackground.data.source.remote.listvideo;
+package com.youtu.sleep.youtubbackground.data.source.remote;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.youtu.sleep.youtubbackground.BuildConfig;
 import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
-import com.youtu.sleep.youtubbackground.data.source.YoutubeVideoDataSource;
+import com.youtu.sleep.youtubbackground.data.source.PopularVideosDataSource;
 import com.youtu.sleep.youtubbackground.utils.exception.ParseJSONException;
 
 import org.json.JSONArray;
@@ -25,68 +25,63 @@ import java.util.List;
 import java.util.Map;
 
 import static com.youtu.sleep.youtubbackground.utils.Contants.BASE_URL;
-import static com.youtu.sleep.youtubbackground.utils.Contants.MOST_POPULAR_VIDEO_URL;
 
 /**
- * Created by thuy on 10/08/2018.
+ * Created by thuy on 06/08/2018.
  */
-public class GetPopularVideoAsyncTask extends AsyncTask<Void, Void, List<Video>> {
+public class PopularVideosRemoteDataSource implements PopularVideosDataSource.RemoteDataSource {
 
-    private static final String MY_TAG = HomeVideoRemoteDataSource.class.getSimpleName();
-    private YoutubeVideoDataSource.RemoteDataSource.OnActionRemoteListener mListener;
+    private static final String MY_TAG = PopularVideosRemoteDataSource.class.getSimpleName();
+    private OnGetPopularVideosListener mListener;
 
     private Exception mException = null;
 
-<<<<<<< HEAD:app/src/main/java/com/youtu/sleep/youtubbackground/data/source/remote/listvideo/GetPopularVideoAsyncTask.java
-    public GetPopularVideoAsyncTask(YoutubeVideoDataSource.RemoteDataSource.OnActionRemoteListener listener) {
-=======
-    private static YoutubeVideoRemoteDataSource instance;
-
-    public static YoutubeVideoRemoteDataSource getInstance() {
-        if (instance == null) {
-            instance = new YoutubeVideoRemoteDataSource();
-        }
-        return instance;
-    }
-
     @Override
     public void getPopularVideos(OnGetPopularVideosListener listener) {
->>>>>>> add notification:app/src/main/java/com/youtu/sleep/youtubbackground/data/source/remote/YoutubeVideoRemoteDataSource.java
         this.mListener = listener;
+        loadData();
     }
 
-    /**
-     * Get result (json string)
-     */
+    private void loadData() {
+        GetVideoDataAsyncTask myAsyncTask = new GetVideoDataAsyncTask();
+        myAsyncTask.execute();
+    }
 
-    @Override
-    protected List<Video> doInBackground(Void... voids) {
-        try {
-            String s = getFullUrl();
-            URL url = new URL(s);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod(ParameterPopularVideo.REQUEST_METHOD);
-            InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-            String result = convertInputStreamToString(inputStream);
-            return parseData(result);
-        } catch (IOException | ParseJSONException e) {
-            mException = e;
-            return null;
+    private class GetVideoDataAsyncTask extends AsyncTask<Void, Void, List> {
+
+        /**
+         * Get result (json string)
+         */
+
+        @Override
+        protected List<Video> doInBackground(Void... voids) {
+            try {
+                String s = getFullUrl();
+                URL url = new URL(s);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod(ParameterPopularVideo.REQUEST_METHOD);
+                InputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                String result = convertInputStreamToString(inputStream);
+                return parseData(result);
+            } catch (IOException | ParseJSONException e) {
+                mException = e;
+                return null;
+            }
         }
-    }
 
-    /**
-     * Parse from json string to Video object list
-     */
+        /**
+         * Parse from json string to Video object list
+         */
 
-    @Override
-    protected void onPostExecute(List videos) {
-        super.onPostExecute(videos);
-        if (mException == null) {
-            if (videos != null) {
-                mListener.onSuccess(videos);
-            } else mListener.onFail(ParameterPopularVideo.NULL_LIST);
-        } else mListener.onFail(mException.getMessage());
+        @Override
+        protected void onPostExecute(List videos) {
+            super.onPostExecute(videos);
+            if (mException == null) {
+                if (videos != null) {
+                    mListener.onSuccess(videos);
+                } else mListener.onFail(ParameterPopularVideo.NULL_LIST);
+            } else mListener.onFail(mException.getMessage());
+        }
     }
 
     private List<Video> parseData(String s) throws ParseJSONException {
@@ -95,7 +90,8 @@ public class GetPopularVideoAsyncTask extends AsyncTask<Void, Void, List<Video>>
             JSONObject jsonObject = new JSONObject(s);
             JSONArray jsonArray = jsonObject.getJSONArray(ParameterPopularVideo.ITEMS_KEY);
             for (int i = 0; i < jsonArray.length(); i++) {
-                String id = jsonArray.getJSONObject(i).getString(ParameterPopularVideo.ID);
+                JSONObject id = jsonArray.getJSONObject(i).getJSONObject(ParameterPopularVideo.ID);
+                String idVideo = id.getString(ParameterPopularVideo.VIDEO_ID);
                 JSONObject snippet = jsonArray.getJSONObject(i).getJSONObject(ParameterPopularVideo.SNIPPET_KEY);
                 String title = snippet.getString(ParameterPopularVideo.TITLE_KEY);
                 String description = snippet.getString(ParameterPopularVideo.DES_KEY);
@@ -103,7 +99,7 @@ public class GetPopularVideoAsyncTask extends AsyncTask<Void, Void, List<Video>>
                 JSONObject high = snippet.getJSONObject(ParameterPopularVideo.THUMBNAILS_KEY)
                         .getJSONObject(ParameterPopularVideo.HIGH_KEY);
                 String url = high.getString(ParameterPopularVideo.URL_KEY);
-                videos.add(new Video(id, title, channelTitle, description, url));
+                videos.add(new Video(idVideo, title, channelTitle, description, url));
             }
         } catch (JSONException e) {
             throw new ParseJSONException(e);
@@ -116,7 +112,7 @@ public class GetPopularVideoAsyncTask extends AsyncTask<Void, Void, List<Video>>
      */
 
     private String getFullUrl() {
-        StringBuilder str = new StringBuilder(BASE_URL + MOST_POPULAR_VIDEO_URL);
+        StringBuilder str = new StringBuilder(BASE_URL);
         Map<String, String> params = new HashMap<>();
 
         params.put(ParameterPopularVideo.PART_KEY, ParameterPopularVideo.PART_VALUE);
@@ -160,6 +156,7 @@ public class GetPopularVideoAsyncTask extends AsyncTask<Void, Void, List<Video>>
 
         String ITEMS_KEY = "items";
         String ID = "id";
+        String VIDEO_ID = "videoId";
         String SNIPPET_KEY = "snippet";
         String TITLE_KEY = "title";
         String DES_KEY = "description";

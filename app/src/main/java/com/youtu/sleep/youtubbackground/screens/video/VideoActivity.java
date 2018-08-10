@@ -103,6 +103,9 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         this.mHolderVideo = surfaceHolder;
+        if (mIsBound) {
+            mVideoService.setHolder(this.mHolderVideo);
+        }
     }
 
     @Override
@@ -112,6 +115,9 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        if (mIsBound) {
+            mVideoService.setHolder(null);
+        }
     }
 
     /**
@@ -229,7 +235,7 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
                     mVideoService.changeMediaStatus();
                     break;
                 case R.id.image_next:
-                    mPositionVideo = getVideoNext();
+                    mPositionVideo = ListVideoControler.getVideoNext(mPositionVideo, getListVideo().size());
                     stopSeekBar();
                     mVideoService.stopVideo();
                     mVideoService.setPosition(mPositionVideo);
@@ -237,7 +243,7 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
                     mProgressBar.setVisibility(View.VISIBLE);
                     break;
                 case R.id.image_prev:
-                    mPositionVideo = getVideoPrevious();
+                    mPositionVideo = ListVideoControler.getVideoPrevious(mPositionVideo);
                     stopSeekBar();
                     mVideoService.setPosition(mPositionVideo);
                     mVideoService.playVideo();
@@ -265,6 +271,15 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
         intent.putExtra(Contants.EXTRA_POSS, mPositionVideo);
         intent.putParcelableArrayListExtra(Contants.EXTRA_LIST_VIDEOS, (ArrayList<? extends Parcelable>) videos);
         intent.setAction(ActionVideo.PLAY_NEW);
+        startService(intent);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    public void startBindService() {
+        VideoService.mCallbackVideo = this;
+        mPositionVideo = getCurrentPositionVideo();
+        Intent intent = new Intent(VideoActivity.this, VideoService.class);
+        intent.setAction(ActionVideo.ADD_HOLDER);
         startService(intent);
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -335,6 +350,9 @@ public class VideoActivity extends BaseActivity implements VideoContract.View,
     @Override
     protected void onStop() {
         super.onStop();
+        Intent intentStart = new Intent(this, VideoService.class);
+        intentStart.setAction(ActionVideo.CREAT_NOTI);
+        startService(intentStart);
         if (mIsBound) {
             unbindService(mServiceConnection);
         }

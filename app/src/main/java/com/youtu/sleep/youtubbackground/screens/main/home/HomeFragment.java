@@ -1,9 +1,11 @@
 package com.youtu.sleep.youtubbackground.screens.main.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,20 +21,25 @@ import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
 import com.youtu.sleep.youtubbackground.data.repository.YoutubeVideoRepository;
 import com.youtu.sleep.youtubbackground.screens.BaseFragment;
 import com.youtu.sleep.youtubbackground.screens.main.VideoAdapter;
+import com.youtu.sleep.youtubbackground.screens.video.VideoActivity;
+import com.youtu.sleep.youtubbackground.utils.Contants;
+import com.youtu.sleep.youtubbackground.utils.navigator.Navigator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends BaseFragment implements PopularVideosContract.View, VideoAdapter.OnItemClick {
+public class HomeFragment extends BaseFragment implements PopularVideosContract.View,
+        VideoAdapter.OnClickItemVideoListener {
 
     private VideoAdapter mAdapter;
-    private PopularVideosPresenter mPresenter;
 
     public VideoAdapter getmAdapter() {
         return mAdapter;
     }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -60,7 +67,7 @@ public class HomeFragment extends BaseFragment implements PopularVideosContract.
         }
         if (networkInfo != null && networkInfo.isConnected()) {
             YoutubeVideoRepository repository = YoutubeVideoRepository.getInstance(getContext());
-            mPresenter = new PopularVideosPresenter(this, repository);
+            PopularVideosPresenter mPresenter = new PopularVideosPresenter(this, repository);
             mPresenter.getPopularVideos();
         } else {
             Toast.makeText(getContext(), R.string.connect_network_fail_message, Toast.LENGTH_SHORT).show();
@@ -75,7 +82,8 @@ public class HomeFragment extends BaseFragment implements PopularVideosContract.
         RecyclerView mRecyclerVideos = view.findViewById(R.id.recycler_most_popular_videos);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         mRecyclerVideos.setLayoutManager(llm);
-        mAdapter = new VideoAdapter(this);
+        mAdapter = new VideoAdapter();
+        mAdapter.setOnClickVideoListener(this);
         mRecyclerVideos.setAdapter(mAdapter);
     }
 
@@ -94,40 +102,30 @@ public class HomeFragment extends BaseFragment implements PopularVideosContract.
 
     @Override
     public void showGetPopularVideosErrorMessage(String message) {
-        Toast.makeText(getContext(), R.string.fail_message + message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.load_video_data_fail_message + message, Toast.LENGTH_SHORT).show();
     }
-
-    /**
-     * show notification if adding to favourite video list successfully
-     */
 
     @Override
     public void insertVideoListSuccessfully() {
-        Toast.makeText(getContext(), R.string.add_favourite_video_success_message, Toast.LENGTH_SHORT).show();
-    }
 
-    /**
-     * show error message if adding to favourite video list unsuccessfully
-     */
+    }
 
     @Override
     public void insertVideoListUnsuccessfully() {
-        Toast.makeText(getContext(), R.string.fail_message, Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void onFavouriteVideoClick(Video video) {
-        mPresenter.insertVideoList(video);
-    }
-
-    @Override
-    public void onRemoveFavouriteVideoClick(Video video) {
-        mPresenter.removeVideoList(video);
     }
 
     @Override
     public void removeVideoFromFavouriteListSuccessfully() {
-        Toast.makeText(getContext(), R.string.remove_favourite_video_success_message, Toast.LENGTH_SHORT).show();
+
     }
 
+    @Override
+    public void onClickItemVideo(int position) {
+        Intent intent = new Intent(getActivity(), VideoActivity.class);
+        intent.putParcelableArrayListExtra(Contants.EXTRA_LIST_VIDEO
+                , (ArrayList<? extends Parcelable>) mAdapter.getVideos());
+        intent.putExtra(Contants.EXTRA_POS_VIDEO, position);
+        new Navigator(getActivity()).startActivity(intent);
+    }
 }

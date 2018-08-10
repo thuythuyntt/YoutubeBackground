@@ -1,4 +1,4 @@
-package com.youtu.sleep.youtubbackground.screens.main;
+package com.youtu.sleep.youtubbackground.screens.main.home;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,28 +16,20 @@ import com.youtu.sleep.youtubbackground.data.model.popularvideo.Video;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.youtu.sleep.youtubbackground.utils.Contants.FALSE;
-import static com.youtu.sleep.youtubbackground.utils.Contants.TRUE;
-
 /**
  * Created by thuy on 01/08/2018.
  */
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder> {
-    private static VideoAdapter.OnClickItemVideoListener sOnClickVideo;
+public class PopularVideosAdapter extends RecyclerView.Adapter<PopularVideosAdapter.MyViewHolder> {
+
     private static List<Video> sVideos;
-    private OnItemClick mListener;
+    private static OnClickItemVideoListener sOnClickVideo;
 
-    public VideoAdapter(OnItemClick listener) {
-        this.mListener = listener;
-        this.sVideos = new ArrayList<>();
+    public List<Video> getVideos() {
+        return sVideos;
     }
 
-    public VideoAdapter() {
+    PopularVideosAdapter() {
         this.sVideos = new ArrayList<>();
-    }
-
-    public void setOnClickVideoListener(OnClickItemVideoListener onClickVideo) {
-        this.sOnClickVideo = onClickVideo;
     }
 
     public void setData(List<Video> videos) {
@@ -45,9 +37,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         this.sVideos.addAll(videos);
         notifyDataSetChanged();
     }
-    public List<Video> getVideos() {
-        return sVideos;
+
+    public void setOnClickVideoListener(OnClickItemVideoListener onClickVideo) {
+        this.sOnClickVideo = onClickVideo;
     }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,50 +58,21 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         return sVideos == null ? 0 : sVideos.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private boolean isFavourite = false;
-
-        private ImageView mImageVideo, mImageFavourite;
+        private ImageView mImageVideo;
         private TextView mTextDuration, mTextVideoName, mTextChannel, mTextDescription;
         private RelativeLayout mRelativeVideo;
 
-        public MyViewHolder(final View itemView) {
+        public MyViewHolder(View itemView) {
             super(itemView);
 
             mImageVideo = itemView.findViewById(R.id.image_video);
-            mImageFavourite = itemView.findViewById(R.id.image_favourite);
             mTextDuration = itemView.findViewById(R.id.text_duration);
             mTextVideoName = itemView.findViewById(R.id.text_name);
             mTextChannel = itemView.findViewById(R.id.text_channel);
             mTextDescription = itemView.findViewById(R.id.text_description);
             mRelativeVideo = itemView.findViewById(R.id.relative_video);
-
-            mImageFavourite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!isFavourite) {
-                        checkFavouriteVideo();
-                    } else {
-                        unCheckFavouriteVideo();
-                    }
-                    notifyDataSetChanged();
-                }
-            });
-        }
-
-        void checkFavouriteVideo() {
-            Video v = sVideos.get(getAdapterPosition());
-            v.setIsFavourite(TRUE);
-            mListener.onFavouriteVideoClick(v);
-            isFavourite = true;
-        }
-
-        void unCheckFavouriteVideo() {
-            Video v = sVideos.get(getAdapterPosition());
-            v.setIsFavourite(FALSE);
-            mListener.onRemoveFavouriteVideoClick(v);
-            isFavourite = false;
         }
 
         void bindData(int position) {
@@ -116,11 +81,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
             mTextVideoName.setText(video.getTitle());
             mTextChannel.setText(video.getChannelTitle());
             mTextDescription.setText(video.getDescription());
-            if (video.getIsFavourite() == TRUE) {
-                mImageFavourite.setBackgroundResource(R.drawable.ic_favourite_default);
-            } else if (video.getIsFavourite() == FALSE) {
-                mImageFavourite.setBackgroundResource(R.drawable.ic_favourite_unable);
-            }
             mRelativeVideo.setTag(position);
             mRelativeVideo.setOnClickListener(on_click);
         }
@@ -134,14 +94,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         };
     }
 
-    public interface OnItemClick {
-        void onFavouriteVideoClick(Video video);
 
-        void onRemoveFavouriteVideoClick(Video video);
-
-    }
-
-    public interface OnClickItemVideoListener {
+    interface OnClickItemVideoListener {
         void onClickItemVideo(int position);
     }
 }

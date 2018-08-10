@@ -10,4 +10,5 @@
     <string name="add_favourite_video_success_message">Adding video to favourite list successfully!</string>
     <string name="remove_favourite_video_success_message">Removing video from favourite list successfully!</string>
     <string name="error_play_video">Can't play video</string>
+    <string name="load_video_data_fail_message">Something went wrong!</string>
 </resources>
